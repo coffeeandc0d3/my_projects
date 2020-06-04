@@ -1,0 +1,123 @@
+//Tic Tac Toe Prototype - Justin Shows
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+//Board Dimensions
+const int ROWS = 3;
+const int COLUMNS = 3;
+//Player Pieces
+const char playerIcon = 'X';
+const char enemyIcon = 'O';
+//Data type used for user choice of row and col
+struct Points{ int row; int col; };
+
+//Function Prototypes
+Points getUserMove(Points& userChoice);
+void makeUserMove(Points userChoice, char board[ROWS][COLUMNS]);
+bool checkWin(char board[ROWS][COLUMNS]);
+void printBoard(char board[ROWS][COLUMNS]);
+Points getEnemyMove(char board[ROWS][COLUMNS]);
+
+//Main
+int main()
+{
+    char board[ROWS][COLUMNS] = {'_','_','_',
+                                 '_','_','_',
+                                 '_','_','_'
+                               };
+     Points userChoice = {};
+     Points enemyMove = {};
+     printBoard(board);
+     //Main Game Loop
+     while (checkWin(board) == false) 
+     {
+        getUserMove(userChoice);
+        makeUserMove(userChoice, board);
+        enemyMove = getEnemyMove(board);
+        board[enemyMove.row][enemyMove.col] = enemyIcon;
+
+        printBoard(board);
+     }
+
+  cout << "\nYou Win!" << endl;
+  return 0;
+}
+
+Points getUserMove(Points& userChoice)
+{   
+    cout << "\n(ROW) Enter Row To Move To ";
+    cin >> userChoice.row;
+
+    cout << "(COL) Enter Column To Move To " << endl;
+    cin >> userChoice.col;
+
+    return userChoice;
+}
+//Subtract 1 to avoid 0 indexing - more user friendly
+void makeUserMove(Points userChoice, char board[ROWS][COLUMNS])
+{
+    board[userChoice.row-1][userChoice.col-1] = playerIcon;
+}
+//"AI" For Enemy AI - doesn't check yet for user about to win
+Points getEnemyMove(char board[ROWS][COLUMNS]) 
+{
+    Points validMove = {};
+    for (int i = 0; i < ROWS; i++)
+    {
+        for (int j = 0; j < COLUMNS; j++) 
+        {
+            if (board[i][j] != playerIcon && board[i][j] != enemyIcon)
+            {
+                validMove.row = i;
+                validMove.col = j;
+                break;
+            } 
+        }
+    }
+  return validMove;
+}
+
+bool checkWin(char board[ROWS][COLUMNS])
+{
+    for (int i = 0; i < ROWS; i++)
+    {
+        for (int j = 0; j < COLUMNS; j++)
+        {
+            if (board[i][j] == playerIcon)
+            {
+//Horizontal Win (Columns)
+                if (board[i][j+1] == playerIcon && 
+                    board[i][j+2] == playerIcon) {return true;}
+//Vertical Win (Rows)
+                else if (board[i+1][j] == playerIcon 
+                    && board[i+2][j] == playerIcon) {return true;}
+            }
+//Diagonal Win - [1][1] is middle
+            if (board[1][1] == playerIcon)
+            {
+//Top Left Win
+                if (board[0][0] == playerIcon 
+                    && board[2][2] == playerIcon) { return true; }
+//Top Right Win
+                 else if (board[2][0] == playerIcon 
+                     && board[0][2] == playerIcon) { return true; }
+            }
+        }
+    }
+  return false;
+}
+
+void printBoard(char board[ROWS][COLUMNS])
+{
+   cout << setw(3) << "|| Tic-Tac-Toe ||" << endl;
+   for (int i = 0; i < ROWS; i++)
+   {
+      if (i > 0) {cout << "\n";}
+      for (int j = 0; j < COLUMNS; j++)
+      {
+        cout << board[i][j] << " ";
+      }
+   } 
+  cout << "\n";
+}
