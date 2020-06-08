@@ -1,0 +1,26 @@
+#include <iostream>
+#include <string>
+using namespace std;
+string reverseString(string raw);
+
+int main()
+{
+	string userString = "";
+	cout << "Enter string to reverse" << endl;
+	cin >> userString;
+
+	cout << "Reversed String: " << reverseString(userString) << endl;
+	
+  return 0;
+}
+
+string reverseString(string raw)
+{
+	string newString = "";
+	for (int endPos = raw.find_last_of("abcdefghijklmnopqrstuvwxyz"); endPos >= 0; --endPos)
+	{ 
+		newString += raw.at(endPos);
+	}
+
+ return newString; 
+}
