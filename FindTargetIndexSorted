@@ -1,0 +1,23 @@
+ int searchInsert(vector<int>& nums, int target) 
+ {
+   int targetIndex{};
+	 unsigned int* pIndexFound;
+	 unsigned int* pIndexShouldBe;
+
+   for (unsigned int i = 0; i < nums.size(); i++) 
+ 	 {
+		 if (nums[i] == target) 
+		 {
+       pIndexFound = &i; 
+       targetIndex = *pIndexFound;
+		   break;
+		 }
+		 if (nums[i] > target && nums[i - (unsigned int)1] != target) 
+		 {
+		   pIndexShouldBe = &i;
+		   targetIndex = *pIndexShouldBe;
+		   break;
+	 	 }
+   } 
+ return targetIndex;
+}
