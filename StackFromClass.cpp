@@ -10,13 +10,14 @@
 //
 //
 //  Justin C. Shows
-//  20200923
+//  20201004
 
 // ////////////////////////////////////////////////////////////////////////////////////////////
 #include <iostream>
 #include <string>
 #include <ctime>
 #include <fstream>
+#include <stdio.h>
 using namespace std;
 
 //	Node will be embedded privately in stack class to protect its data members
@@ -53,7 +54,7 @@ class stack
 	int pushToStack(int value);
 };
 
-//	On creation of a stack object, inits the top pointer to null
+//	On creation of stack object, inits top pointer member variable to null
 stack::stack()
 {
 	top = NULL;
@@ -63,10 +64,19 @@ stack::stack()
 //  Destructor
 stack::~stack()
 {
+	int count = 1;
+
+//	Checks if object was destroyed, if not, deletes it: 
 	while (top != NULL)
 	{
+		count = count + 1;
 		cout << "Deleting: " << getTop() << endl;
+
+//		Every 10 items, break output stream
+		if (count % 10 == 0) { cout << endl; count = 1; }
 	}
+
+//	 If already empty, outputs to screen:
  	 if (top == NULL)
      {
 	   cout << endl << "Destroyed stack object. " << endl << endl;
@@ -78,13 +88,15 @@ int stack::pushToStack(int value)
 {
 	struct node* newNode = new node;
 
-	if (newNode == NULL) { cout << "Error"; return 1; }
+	if (newNode == NULL) { cout << "Error creating new node to insert. "; return 1; }
 
+//	Grab new data passed in function
 	newNode->data = value;
 
 //	New node points to current top
 	newNode->behind = top;
 
+//	Top now points to new location of top - newnode
 	top = newNode;
 
 	return 0;
@@ -112,6 +124,7 @@ int stack::getTop()
 {
 	if (top != NULL)
 	{
+//		Grab top value from stack
 		int topValue = peekTop();
 		struct node* temp = top;
 
@@ -131,6 +144,7 @@ int stack::getTop()
 //   Displays all items. While top is present, outputs each value, deletes current top & points to new top
 void stack::viewStack()
 {
+//	Used to format output 
 	int count = 1;
 	cout << "Stack: " << endl;
 
@@ -145,10 +159,11 @@ void stack::viewStack()
 			cout << endl;
 		}
 
-//	    Track # times retrieved value
+//	    Track # times item is output: 
 		count = count + 1;
 	}
 
+//	Display total size of stack:
 	cout << endl << endl;
 	cout << "Total items in stack: " << count - 1 << " " << endl;
 }
@@ -159,7 +174,7 @@ void stack::viewStack()
 int getTotal();
 
 //	Writes random numbers into numbers.bin file 
-int writeBinary(const int& total);
+int writeBinary(const int& totalValues);
 
 //  Reads from previously written to numbers.bin file and pushes each value read from file to stack
 int getData(stack& myStack);
@@ -190,17 +205,19 @@ int main(int argc, char *argv[])
 
 	stack myStack;
 
-	if (totalValues != 0) 
+	if (totalValues != 0)
 	{
 //		Write random #'s (1-100) to binary file "numbers.bin"
 		writeBinary(totalValues);
 
 //		Read from "numbers.bin" & push each file value to top of stack: 
 		getData(myStack);
-	}	 	
+	}
+	else { cout << "Error getting total values. " << endl; exit(1); }
 	cout << "\n\n\n";
 
-    myStack.viewStack();
+//	View all items in stack, peeks at top, returns value, pops most recent top, points to new top:
+	myStack.viewStack();
 
    return 0;
 }
@@ -210,16 +227,16 @@ int getTotal()
 {
 	int total = 0;
 
-//	Total must be between 1 - 1000 		
-	while (total == 0 && total < 1 && total <= 1000)
+//	Total must be between 1-1000:
+	while (true)
 	{
-		cout << "Enter total numbers to generate: (1 -1000) " << endl;
-
+		cout << "Enter total amount of numbers to generate: (1-1000 only) " << endl << "-1 TO EXIT" << endl;
 		cin >> total;
-		return total;
+		if (total >= 1 && total <= 1000) { break; }
+		if (total == -1) { cout << "Closing program..." << endl; exit(1); }
 	}
 
-  return 0;
+	return total;
 }
 
 //	Creates numbers.bin file and writes random #'s in binary to this file 
@@ -235,7 +252,7 @@ int writeBinary(const int& total)
 	}
 
 //	Output
-	cout << "Data written to file: (" << total << ")  item(s). " << endl;
+	cout << "Data written to file: (" << total << ") item(s). " << endl;
 
 	int count = 0;
 	for (int i = 0; i < total; i++)
@@ -253,8 +270,7 @@ int writeBinary(const int& total)
 		count = count + 1;
 
 //	    Every 10 lines, break the output stream
-		if (count  % 10 == 0) {cout << endl; count = 0;}
-
+		if (count % 10 == 0) { cout << endl; count = 0; }
 	}
 
 	writeBinary.close();
@@ -281,12 +297,16 @@ int getData(stack& myStack)
 		int value = 0;
 		readFile.read((char*)&value, sizeof(int));
 
+//		Provided valid value, pushes to stack 
 		if (value != 0)
 		{
 			myStack.pushToStack(value);
 		}
 		else { continue; }
 	}
+
+//	Close input stream
+	readFile.close();
 
 	return 0;
 }
