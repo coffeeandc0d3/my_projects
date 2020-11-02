@@ -19,7 +19,7 @@
 #include <ctime>
 using namespace std;
 
-//  Definition of a node - contains value, ->next & ->prev pointers to another instantiation of type struct node; (in this case) 
+//  Definition of a node - contains value, ->next & ->prev pointers  
 struct node
 {
     int value;
@@ -30,25 +30,25 @@ struct node
 //  Grabs total #'s to generate from user:
 int getTotal(int&);
 
-//  Outputs values of a given linked list 
+//   Outputs values of a given linked list 
 void twoWayPrint(node*);
 
 //  Writes binary numbers randomly between 0 and 99
 int writeData(const string&, int);
 
-//  Reads each value in binary file & inserts into list:
+//    Reads each value in binary file & inserts into list:
 node* readData(ifstream&, node*);
-
-//  Provided reference to head & new value, inserts new node in list w/ value:
+ 
+//    Provided reference to head & new value, inserts new node in list w/ value:
 node* insertNodes(node*, int);
 
-//  Points ahead of next while iterating & deletes current head 
-node* removeEvenItems(node* head);
+//    Points ahead of next while iterating & deletes current head 
+node* removeEvenItems(node* head);      
 
-//  Given ptr to head & node to delete, removes it & updates pointers
+//    Given ptr to head & node to delete, removes it & updates pointers
 node* deleteNode(node* head, node* deleteNode);
 
-//  Deletes every node in given list:
+//    Deletes every node in given list:
 node* deleteAllNodes(node* head);
 
 const int ERROR = 1;
@@ -64,11 +64,12 @@ int main(int argc, char* argv[])
 //     If user didn't pass in total, prompts user for total: 
        if (argc != 2)
        {
-           cout << "Total not passed in. Enter total #'s to randomly generate: " << endl << "-1 TO EXIT" << endl;
-           getTotal(totalValues);
+           cout << "Total not passed in. Enter total #'s to generate: " 
+                   << endl << "-1 TO EXIT" << endl;
+          getTotal(totalValues);
        }
        else
-           totalValues = atoi(argv[1]);
+       totalValues = atoi(argv[1]);
 
 //     If total passed in doesn't meet constraints, prompt user:
        if (totalValues < 20 || totalValues > 100) { getTotal(totalValues); }
@@ -126,12 +127,12 @@ int main(int argc, char* argv[])
           head = deleteAllNodes(head);
           
 //        Final print: 
-
           cout << "[After deleting] " << endl << endl;
           twoWayPrint(head);
 
-    return 0;
+          return 0;
 }
+
 //  Gets total #'s to create from user, called if not passed in command line: 
 int getTotal(int& totalValues)
 {
@@ -145,10 +146,11 @@ int getTotal(int& totalValues)
 //     -1 to close program:
         if (totalValues == -1) { cout << "Exiting Program... " << endl; exit(1); }
     }
+
     return totalValues;
 }
 
-//  Opens binary file "numbers.bin" & reads each value & inserts as new node into list: 
+//    Opens binary file "numbers.bin" & reads each value & inserts as new node into list: 
 node* readData(ifstream& binaryFile, node* head)
 {
 //  Until reaching end, store ea. bin value as int
@@ -160,13 +162,15 @@ node* readData(ifstream& binaryFile, node* head)
 //      If valid data is found, insert into list:
         if (fileValue != 0)
         {
-             head = insertNodes(head, fileValue);
+              head = insertNodes(head, fileValue);
         }
     }
+
+//  Head changed so return:  
     return head;
 }
 
-//   Deletes all nodes in a given linked list provided list's head: 
+//    Deletes all nodes in a given linked list provided list's head: 
 node* deleteAllNodes(node* head)
 {
      struct node* traversal;
@@ -174,15 +178,16 @@ node* deleteAllNodes(node* head)
  //  Iterate through list, peeking ahead while deleting head's current node:
      while (head != NULL)
      {
-         traversal = head->nextAddress;
-         delete(head);
-         head = traversal;
+          traversal = head->nextAddress;
+          delete(head);
+          head = traversal;
      }
 
+//   Head changed so return: 
      return head;
 }
 
-//  Inserts nodes into doubly linked list, updates ->next and ->prev pointers for new insertions
+//    Inserts nodes into doubly linked list, updates ->next and ->prev pointers for new insertions
 node* insertNodes(node* head, int valueOther)
 {
     struct node* current = head;
@@ -213,7 +218,7 @@ node* insertNodes(node* head, int valueOther)
     return head;
 }
 
-//   Iterates through list and deletes any nodes with even values 
+//    Iterates through list and deletes any nodes with even values 
 node* removeEvenItems(node* head)
 {
     struct node* temp = head;
@@ -230,11 +235,12 @@ node* removeEvenItems(node* head)
         
           temp = peek;
      }
-
+        
 //  Since head changed, return:
     return head;
 }
-//   Deletes a given node with appropriate logic to update pointers:
+
+//    Deletes a given node with appropriate logic to update pointers:
 node* deleteNode(node* head, node* deleteNode)
 {
 //  Base Case: 
@@ -252,7 +258,7 @@ node* deleteNode(node* head, node* deleteNode)
     {
         deleteNode->nextAddress->previous = deleteNode->previous;
     }
-
+        
 //  Modifies previous only if there's valid previous node:
     if (deleteNode->previous != NULL)
     {
@@ -278,6 +284,7 @@ void twoWayPrint(node* head)
      cout << endl << "[Original Order] " << endl;
 
 //   Print head to tail:
+
      while (current->nextAddress != NULL)
      {
 //        Move to next node
@@ -291,10 +298,10 @@ void twoWayPrint(node* head)
 
 //   Reset output counter for formatting reversed output below: 
      count = 1;
-     cout << endl << endl;
 
 //   Print tail to head:
-     cout << endl << "[Reversed Order]: " << endl;
+
+     cout << endl << endl << endl << "[Reversed Order]: " << endl;
 
      while (current->previous != NULL)
      {
@@ -303,6 +310,7 @@ void twoWayPrint(node* head)
 
 //       Every 10 outputs, break lines
          if (count % 10 == 0) { cout << endl; }
+
          count = count + 1;
      }
      cout << endl << endl;
@@ -323,7 +331,7 @@ int writeData(const string& filename, int totalValues)
         value = (rand() * rand()) % 100 + 1;
 
 //      For all 1's, randomize from [0 to 20 (+ 2)] )
-        if (value == 1) {value = rand() % 15 + 2; }
+        if (value == 1) {value = rand() % 20 + 2; }
 
 //      Write random #'s into binary file "numbers.bin":
         writeBinary.write(reinterpret_cast<const char*>(&value), sizeof(int));
